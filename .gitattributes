@@ -1,0 +1,12 @@
+# 统一换行符处理，避免 Windows/Linux 之间来回改行尾造成无意义 diff
+* text=auto
+
+# 批处理脚本必须是 CRLF，否则 cmd 会把命令切碎（"echo" 被读成 "cho" 那种）
+*.bat text eol=crlf
+
+# 二进制文件不要做换行/编码转换
+*.png  binary
+*.webp binary
+*.jpg  binary
+*.apk  binary
+*.jar  binary

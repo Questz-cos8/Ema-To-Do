@@ -1,0 +1,14 @@
+REM ===============================================================
+REM Template for machine-local build config.
+REM
+REM Usage: copy this file to build.local.bat (same folder) and set your JDK path.
+REM
+REM Why a separate file:
+REM   A JDK lives in a different place on every machine. Hardcoding it in
+REM   build.bat would commit a local path (usually containing your Windows
+REM   user name) into a public repository. build.local.bat is git-ignored,
+REM   so it only ever exists on your own machine.
+REM ===============================================================
+
+REM Point this at the root of a JDK 17 - it must contain bin\javac.exe
+set JAVA_HOME=C:\path\to\your\jdk-17

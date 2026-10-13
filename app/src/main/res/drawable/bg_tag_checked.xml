@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  标签选中：实打实的樱粉底（不透明），亮度明显低于未选中态，
+  所以选中/未选中只靠亮度就能区分。
+-->
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
+    <solid android:color="@color/primary" />
+    <corners android:radius="15dp" />
+    <stroke android:width="1dp" android:color="@color/primary_dark" />
+</shape>

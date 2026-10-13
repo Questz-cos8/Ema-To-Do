@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <style name="Theme.TodoLife" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorPrimaryVariant">@color/primary_dark</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorSecondary">@color/secondary</item>
+        <item name="colorSecondaryVariant">@color/secondary_dark</item>
+        <item name="colorOnSecondary">@color/white</item>
+        <item name="android:colorBackground">@android:color/transparent</item>
+        <item name="colorSurface">@color/surface</item>
+        <item name="colorOnSurface">@color/text_primary</item>
+        <item name="colorError">@color/dot_overdue</item>
+        <!-- 浅色状态栏 + 深色图标，配合米白/藕粉底 -->
+        <item name="android:statusBarColor">@color/status_bar</item>
+        <item name="android:navigationBarColor">@color/status_bar</item>
+        <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="bottomSheetDialogTheme">@style/Theme.TodoLife.BottomSheet</item>
+        <item name="materialAlertDialogTheme">@style/Theme.TodoLife.AlertDialog</item>
+        <item name="android:textColorPrimary">@color/text_primary</item>
+        <item name="android:textColorSecondary">@color/text_secondary</item>
+        <item name="android:textColorHint">@color/text_hint</item>
+    </style>
+
+    <style name="Theme.TodoLife.BottomSheet" parent="Theme.MaterialComponents.Light.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/TodoLife.BottomSheetStyle</item>
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@color/surface</item>
+    </style>
+
+    <style name="TodoLife.BottomSheetStyle" parent="Widget.MaterialComponents.BottomSheet.Modal">
+        <item name="behavior_peekHeight">auto</item>
+        <item name="android:background">@drawable/bg_bottom_sheet</item>
+    </style>
+
+    <style name="Theme.TodoLife.AlertDialog" parent="Theme.MaterialComponents.Light.Dialog.Alert">
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorAccent">@color/primary</item>
+        <item name="android:background">@drawable/bg_dialog</item>
+        <item name="android:textColorPrimary">@color/text_primary</item>
+    </style>
+
+    <!-- 小节标题：小字号 + 淡紫 + 一点字距，干净不抢戏 -->
+    <style name="SectionLabel">
+        <item name="android:textSize">12.5sp</item>
+        <item name="android:textColor">@color/text_secondary</item>
+        <item name="android:letterSpacing">0.08</item>
+        <item name="android:paddingStart">4dp</item>
+        <item name="android:paddingEnd">4dp</item>
+        <item name="android:paddingTop">18dp</item>
+        <item name="android:paddingBottom">7dp</item>
+    </style>
+
+    <style name="FieldLabel">
+        <item name="android:textSize">12.5sp</item>
+        <item name="android:textColor">@color/text_secondary</item>
+        <item name="android:letterSpacing">0.04</item>
+        <item name="android:paddingBottom">6dp</item>
+        <item name="android:paddingTop">14dp</item>
+    </style>
+
+    <!-- 胶囊按钮：细描边、无阴影、够大的圆角 -->
+    <style name="PillButton" parent="Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="android:textSize">13sp</item>
+        <item name="android:minHeight">42dp</item>
+        <item name="android:minWidth">0dp</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+        <item name="android:paddingStart">16dp</item>
+        <item name="android:paddingEnd">16dp</item>
+        <item name="android:letterSpacing">0.02</item>
+        <item name="cornerRadius">21dp</item>
+        <item name="strokeColor">@color/stroke_strong</item>
+        <item name="strokeWidth">1dp</item>
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="backgroundTint">@color/surface</item>
+        <item name="rippleColor">@color/primary_soft</item>
+        <item name="elevation">0dp</item>
+    </style>
+
+    <style name="PillButton.Filled">
+        <item name="backgroundTint">@color/primary</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="strokeWidth">0dp</item>
+        <item name="rippleColor">@color/white</item>
+    </style>
+
+    <!-- 紧凑胶囊：设置页的数据按钮用，两行放四个，不再各占一整行 -->
+    <style name="PillButton.Compact">
+        <item name="android:textSize">12.5sp</item>
+        <item name="android:minHeight">38dp</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+        <item name="android:paddingStart">6dp</item>
+        <item name="android:paddingEnd">6dp</item>
+        <item name="cornerRadius">19dp</item>
+        <item name="strokeWidth">0dp</item>
+        <item name="elevation">0dp</item>
+        <item name="backgroundTint">@color/surface_cream</item>
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="rippleColor">@color/primary_soft</item>
+    </style>
+
+    <!-- 输入框统一样式 -->
+    <style name="Field">
+        <item name="android:background">@drawable/bg_field</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:textColorHint">@color/text_hint</item>
+    </style>
+
+    <!-- ===== 无灰底的排版元素 ===== -->
+
+    <!-- 信息行左侧的小标签：日期 / 提醒 / 进度 -->
+    <style name="InfoLabel">
+        <item name="android:textSize">11.5sp</item>
+        <item name="android:textColor">@color/text_hint</item>
+        <item name="android:letterSpacing">0.08</item>
+        <item name="android:minWidth">52dp</item>
+    </style>
+
+    <!-- 信息行的值 -->
+    <style name="InfoValue">
+        <item name="android:textSize">13sp</item>
+        <item name="android:textColor">@color/text_primary</item>
+    </style>
+
+    <!-- 极细分隔线：代替原来的灰底块 -->
+    <style name="Hairline">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">1dp</item>
+        <item name="android:background">@color/hairline</item>
+        <item name="android:layout_marginTop">9dp</item>
+        <item name="android:layout_marginBottom">9dp</item>
+    </style>
+
+    <!-- 纯文字按钮：快速日期、数据区那几个都换成这个，不占灰底 -->
+    <style name="TextChip">
+        <item name="android:textSize">12.5sp</item>
+        <item name="android:textColor">@color/text_secondary</item>
+        <item name="android:background">@drawable/bg_text_chip</item>
+        <item name="android:gravity">center</item>
+        <item name="android:minHeight">34dp</item>
+        <item name="android:minWidth">0dp</item>
+        <item name="android:paddingStart">10dp</item>
+        <item name="android:paddingEnd">10dp</item>
+    </style>
+
+    <!--
+      可选中的标签胶囊：用普通 TextView + 自己画的背景，选中态由代码切换 drawable。
+      不用 Material Chip 是因为它的自动配色会掺进主题的 colorSecondary，
+      在这套自定义配色里渲染出来的颜色不可控。
+    -->
+    <style name="TagChip">
+        <item name="android:textSize">13sp</item>
+        <item name="android:textColor">@color/text_secondary</item>
+        <item name="android:background">@drawable/bg_tag_unchecked</item>
+        <item name="android:gravity">center</item>
+        <item name="android:minWidth">0dp</item>
+        <item name="android:minHeight">36dp</item>
+        <item name="android:paddingStart">14dp</item>
+        <item name="android:paddingEnd">14dp</item>
+    </style>
+
+    <!-- 单选按钮统一用主色；文字用次级灰（原来偏黑，在一堆粉色里显重） -->
+    <style name="TodoLife.RadioButton" parent="Widget.AppCompat.CompoundButton.RadioButton">
+        <item name="android:buttonTint">@color/primary</item>
+        <item name="android:textColor">@color/text_secondary</item>
+    </style>
+</resources>

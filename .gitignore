@@ -1,0 +1,17 @@
+# 构建产物与本地工具链（不上传、不参与打包）
+.buildtools/
+.gradle/
+build/
+app/build/
+local.properties
+*.iml
+.idea/
+captures/
+*.apk.idsig
+
+# 本机专用构建配置：JDK 路径这类东西因人而异，写进公开仓库会连带泄露本机用户名
+build.local.bat
+
+# 安装包不进仓库：每版 APK 放到 GitHub Releases
+# （否则仓库每出一个版本就永久增加约 5.7 MB）
+*.apk

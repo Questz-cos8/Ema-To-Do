@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 空状态与顶部小图标：樱粉主题 -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="40dp"
+    android:height="40dp"
+    android:viewportWidth="40"
+    android:viewportHeight="40">
+    <path
+        android:fillColor="#E8879F"
+        android:pathData="M10,4h20a6,6 0 0 1 6,6v20a6,6 0 0 1 -6,6h-20a6,6 0 0 1 -6,-6v-20a6,6 0 0 1 6,-6z" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M11,16.5l3.6,3.6L25,12l2.6,2.6l-13,13l-6.2,-6.2z" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:fillAlpha="0.55"
+        android:pathData="M11,26.5l3.6,3.6L25,22l2.6,2.6l-13,13l-6.2,-6.2z" />
+</vector>
