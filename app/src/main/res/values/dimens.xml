@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 一行式紧凑卡片：整体变矮，间距收紧 -->
+    <dimen name="page_padding">16dp</dimen>
+    <dimen name="card_radius">18dp</dimen>
+    <dimen name="card_radius_small">13dp</dimen>
+    <dimen name="card_gap">8dp</dimen>
+    <dimen name="dot_size">10dp</dimen>
+    <dimen name="dot_size_big">11dp</dimen>
+    <dimen name="fab_margin">18dp</dimen>
+    <dimen name="row_min_height">62dp</dimen>
+    <dimen name="tag_dot">9dp</dimen>
+    <dimen name="hairline">1dp</dimen>
+</resources>

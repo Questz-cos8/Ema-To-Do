@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="white">#FFFFFFFF</color>
+    <color name="black">#FF000000</color>
+
+    <!-- ===== 主色：樱粉 ===== -->
+    <color name="primary">#E8879F</color>
+    <color name="primary_dark">#D06C88</color>
+    <color name="primary_soft">#26E8879F</color>
+    <color name="primary_tint">#1FE8879F</color>
+    <color name="secondary">#A99BD4</color>
+    <color name="secondary_dark">#8C7CBF</color>
+
+    <!-- ===== 底色：米白 / 藕粉 ===== -->
+    <color name="status_bar">#FFFAF3F5</color>
+    <color name="surface">#FFFFFFFF</color>
+    <color name="surface_alt">#FFFDF7F8</color>
+    <color name="surface_cream">#FFFBEFF2</color>
+    <color name="stroke">#14B08A98</color>
+    <color name="stroke_strong">#24B08A98</color>
+    <color name="header_veil">#E6FFF7F9</color>
+    <color name="frost">#F2FFFBFC</color>
+
+    <!-- ===== 文字 ===== -->
+    <color name="text_primary">#FF3D3742</color>
+    <color name="text_secondary">#FF8C8493</color>
+    <color name="text_hint">#FFB8B0BE</color>
+
+    <!-- ===== DDL 圆点：柔和樱色系（保留「≤3天=红」的语义）===== -->
+    <color name="dot_overdue">#C96A7A</color>
+    <color name="dot_urgent">#EE7B92</color>
+    <color name="dot_soon">#F0A97C</color>
+    <color name="dot_normal">#7FCBA6</color>
+    <color name="dot_far">#B8B2C6</color>
+    <color name="dot_longterm">#A99BD4</color>
+
+    <!-- ===== 标签配色 ===== -->
+    <color name="chip_school_bg">#1FA99BD4</color>
+    <color name="chip_school_text">#FF7A6BB0</color>
+    <color name="chip_personal_bg">#1F7FCBA6</color>
+    <color name="chip_personal_text">#FF4E9C79</color>
+    <color name="chip_required_bg">#26EE7B92</color>
+    <color name="chip_required_text">#FFC95F77</color>
+    <color name="chip_optional_bg">#1F8C8493</color>
+    <color name="chip_optional_text">#FF6F6878</color>
+    <color name="chip_neutral_bg">#149B93A1</color>
+    <color name="chip_neutral_text">#FF7A7285</color>
+
+    <!-- ===== 其他 ===== -->
+    <color name="scrim">#4D3D3742</color>
+    <color name="hairline">#14B08A98</color>
+    <color name="card_overlay">#FFFFFFFF</color>    <color name="card_bg_veil">#D9FFFFFF</color>
+    <color name="pressed_veil">#14000000</color>
+</resources>

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 标签胶囊的选中状态存在 view 的 tag 里，用这个 id 区分「标签名」和「选中状态」两类 tag -->
+    <item name="tag_chip_state" type="id" />
+</resources>

@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">艾玛の待办清单</string>
+    <string name="app_subtitle">Ema\'s To-Do</string>
+
+    <!-- 底部导航 -->
+    <string name="nav_todo">待完成</string>
+    <string name="nav_calendar">日历</string>
+    <string name="nav_done">已完成</string>
+    <string name="nav_settings">设置</string>
+
+    <!-- 日历俯瞰 -->
+    <string name="calendar_title">日历俯瞰</string>
+    <string name="calendar_today">回到今天</string>
+    <string name="calendar_empty_day">这天什么都没安排，可以偷懒～</string>
+
+    <!-- 区域 -->
+    <string name="zone_deadline">有截止日期 · DDL</string>
+    <string name="zone_longterm">长线任务 · 无 DDL</string>
+
+    <!-- 每日问候（艾玛的语气） -->
+    <string name="greet_morning">早上好呀 ☀️(๑•̀ᴗ-)✧</string>
+    <string name="greet_noon">中午好呀 🍰(・ω・)ノ</string>
+    <string name="greet_afternoon">下午好呀 🍵(◍•ᴗ•◍)</string>
+    <string name="greet_evening">晚上好呀 🌙~(˶˃ ᵕ ˂˶)</string>
+    <string name="greet_night">夜深啦，别熬太晚哦 💤( -ω-)zzz</string>
+
+    <!-- 操作 -->
+    <string name="action_new">新建任务</string>
+    <string name="action_save">保存</string>
+    <string name="action_cancel">取消</string>
+    <string name="action_delete">删除</string>
+    <string name="swipe_delete_hint">删除</string>
+    <string name="action_edit">编辑</string>
+    <string name="action_undo">撤销</string>
+    <string name="action_done">完成</string>
+    <string name="action_filter">筛选</string>
+    <string name="action_pick_card_bg">卡片背景图</string>
+    <string name="action_clear_card_bg">清除卡片背景</string>
+
+    
+    <!-- 表单 -->
+    <string name="hint_title">要做什么呀？（必填）</string>
+    <string name="hint_note">写详细一点吧～步骤、资料链接、老师的要求…</string>
+    <string name="label_zone">任务类型</string>
+    <string name="label_deadline">截止时间</string>
+    <string name="label_tags">标签</string>
+    <string name="label_priority">优先级</string>
+    <string name="label_stage">当前进度</string>
+    <string name="label_remind">提醒</string>
+    <string name="label_card_bg">卡片背景</string>
+    <string name="tab_edit_title">改一改这张</string>
+    <string name="tab_new_title">新建一张</string>
+
+    <!-- 空状态 -->
+    <string name="empty_todo_title">岛上还空空的呢</string>
+    <string name="empty_todo_sub">点右下角的 ＋ ，写下第一件事吧～ ＞~＜</string>
+    <string name="empty_done_title">还没有划掉的事哦 (ᜊᗜ.ᗜ)ᜊ</string>
+    <string name="empty_done_sub">做完的都会被魔法收进这里～ ✨</string>
+    <string name="empty_filter_title">这里什么都没有呢</string>
+    <string name="empty_filter_sub">换个筛选条件看看吧～ (๑˃ᴗ˂)ﻭ</string>
+    <string name="empty_zone_ddl">这一块空空的，真好呀～ ＞~＜</string>
+    <string name="empty_zone_long">长线任务还没写呢～</string>
+
+    <!-- 设置 -->
+    <string name="review_today">今天划掉</string>
+    <string name="review_week">本周划掉</string>
+    <string name="review_left">还剩下</string>
+    <string name="settings_background">全局背景图</string>
+    <string name="settings_background_desc">挑一张喜欢的图铺在整个岛上吧～透明度可以调哦</string>
+    <string name="settings_data">数据</string>
+    <string name="settings_export">导出备份</string>
+    <string name="settings_import">导入备份</string>
+    <string name="settings_clear_done">清空已完成任务</string>
+    <string name="settings_clear_done_short">清空已完成</string>
+    <string name="settings_about">关于</string>
+    <string name="settings_about_desc">艾玛の待办清单 v1.2.7 · Ema\'s To-Do\n都乖乖存在本机里，不联网、不上传哦</string>
+    <string name="settings_sample">插入示例任务</string>
+    <string name="settings_legend">圆点颜色：灰 &gt;14天 · 薄荷 ≤14天 · 杏橙 ≤7天 · 樱红 ≤3天 · 暗樱 已逾期 · 淡紫 长线</string>
+
+    <!-- 通知 -->
+    <string name="notify_channel_name">任务提醒</string>
+    <string name="notify_channel_desc">到点啦～艾玛来叫你一下</string>
+
+    <!-- 提醒文案 -->
+    <string name="copy_done">好厉害～划掉啦！ ⸜(｡˃ ᵕ ˂ )⸝♡</string>
+    <string name="copy_saved">记住啦～</string>
+    <string name="copy_undo">已经拿回来啦～ (っ- ‸ - ς)</string>
+    <string name="copy_card_bg_done">卡片变好看啦～ ✨(✿◡‿◡)</string>
+    <string name="copy_no_image">咦，没有选中图片…</string>
+    <string name="copy_cant_open_picker">打不开相册呢…</string>
+    <string name="copy_image_failed">这张图读不进来呢…换个格式试试？</string>
+    <string name="copy_reminder_set">好啦，到点会叫你的～ ⏰(๑&gt;ᴗ&lt;๑)</string>
+    <string name="copy_reminder_need_ddl">长线任务没有截止时间呀，先给它一个 DDL 吧～</string>
+    <string name="copy_no_notify_permission">没有通知权限的话，提醒只能在 App 里看到哦</string>
+    <string name="copy_sample_done">示例任务放好啦～ (๑˃ᴗ˂)ﻭ</string>
+    <string name="copy_import_merge">合并了 %1$d 条，真棒～ ✨</string>
+    <string name="copy_import_replace">用备份盖好啦～ ＞~＜</string>
+    <string name="copy_import_failed">这个文件好像坏掉了…</string>
+    <string name="copy_export_ok">导出来啦：%1$s</string>
+
+    <!-- 杂项 -->
+    <string name="pick_image">选择图片</string>
+    <string name="need_title">还没写要做什么呢～</string>
+    <string name="confirm_clear_done">要把划掉的全部清空吗？</string>
+</resources>

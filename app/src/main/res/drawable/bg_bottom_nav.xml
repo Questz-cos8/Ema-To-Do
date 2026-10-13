@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  底栏底色：完全不透明（用 F 开头的 alpha），顶部 24dp 圆角。
+  不要在这里留半透明——那会让背景图从底栏里透出来，和上面的填充色形成断层。
+-->
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
+    <solid android:color="#FFFDF6F8" />
+    <corners android:topLeftRadius="24dp" android:topRightRadius="24dp" />
+    <stroke android:width="1dp" android:color="#14B08A98" />
+</shape>
