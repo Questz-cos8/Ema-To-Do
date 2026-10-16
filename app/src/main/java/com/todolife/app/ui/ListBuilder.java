@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.Paint;
 import android.graphics.drawable.GradientDrawable;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -36,6 +35,14 @@ public final class ListBuilder {
 
     public static void bind(LinearLayout container, View emptyView, List<Task> tasks,
                             boolean doneList, TaskActions actions) {
+        bind(container, emptyView, tasks, doneList, actions, false);
+    }
+
+    /**
+     * @param draggable 是否允许「长按拖拽排序」——只有长线任务区开启
+     */
+    public static void bind(LinearLayout container, View emptyView, List<Task> tasks,
+                            boolean doneList, TaskActions actions, boolean draggable) {
         Context c = container.getContext();
         container.removeAllViews();
         if (tasks == null || tasks.isEmpty()) {
@@ -47,13 +54,16 @@ public final class ListBuilder {
         LayoutInflater inflater = LayoutInflater.from(c);
         for (Task t : tasks) {
             View v = inflater.inflate(R.layout.item_task, container, false);
-            bindRow(v, t, doneList, actions);
+            bindRow(v, t, doneList, container, draggable, actions);
             container.addView(v);
         }
     }
 
-    private static void bindRow(View v, Task t, boolean doneList, TaskActions actions) {
+    private static void bindRow(View v, Task t, boolean doneList,
+                               LinearLayout container, boolean draggable, TaskActions actions) {
         Context c = v.getContext();
+        // 拖拽排序完成后要按「行的顺序」把任务读回来，所以每行挂上自己的任务 id
+        v.setTag(R.id.row_task, t.getId());
 
         /*
          * 两个概念要分开：
@@ -126,7 +136,8 @@ public final class ListBuilder {
 
         // ---------- 进度（只在进行中/待收尾时显示，减少噪音） ----------
         if (!doneStyle && t.getStage() > 0) {
-            stage.setText(t.stageName());
+            // 「进行中」在卡片上带省略号，读起来像还在跑
+            stage.setText(t.getStage() == 1 ? "进行中..." : t.stageName());
             stage.setVisibility(View.VISIBLE);
         } else {
             stage.setVisibility(View.GONE);
@@ -164,73 +175,19 @@ public final class ListBuilder {
         card.setOnClickListener(view -> {
             if (actions != null) actions.onOpen(t);
         });
-        card.setOnLongClickListener(view -> {
-            if (actions != null) actions.onEdit(t);
-            return true;
-        });
+        if (draggable) {
+            // 长线任务区：长按留给「拖拽排序」（在 ListGestures 里处理），
+            // 想编辑就点卡片 → 详情 → 编辑。
+        } else {
+            card.setOnLongClickListener(view -> {
+                if (actions != null) actions.onEdit(t);
+                return true;
+            });
+        }
         btnDone.setOnClickListener(view -> {
             if (actions != null) actions.onToggleDone(t);
         });
-        bindSwipeDelete(v, card, t, actions);
-    }
-
-    /**
-     * 左滑删除：把卡片往左拖动，露出的底层会显示「删除 🗑」，
-     * 松手时滑动超过阈值（卡片宽度的 35%）就删掉，否则弹回原位。
-     *
-     * <p>只处理横向手势：竖直方向的移动一律交回给外层滚动，避免列表滑不动。</p>
-     */
-    private static void bindSwipeDelete(View rowRoot, MaterialCardView card, Task task, TaskActions actions) {
-        final float threshold = 0.35f;
-        final float[] startX = {0f};
-        final float[] startY = {0f};
-        final boolean[] swiping = {false};
-
-        rowRoot.setOnTouchListener((view, event) -> {
-            switch (event.getActionMasked()) {
-                case MotionEvent.ACTION_DOWN:
-                    startX[0] = event.getRawX();
-                    startY[0] = event.getRawY();
-                    swiping[0] = false;
-                    break;
-                case MotionEvent.ACTION_MOVE: {
-                    float dx = event.getRawX() - startX[0];
-                    float dy = event.getRawY() - startY[0];
-                    if (!swiping[0]) {
-                        if (Math.abs(dx) < 24 || Math.abs(dx) < Math.abs(dy)) break;
-                        swiping[0] = true;
-                        view.getParent().requestDisallowInterceptTouchEvent(true);
-                    }
-                    float offset = Math.min(0f, dx);
-                    card.setTranslationX(offset);
-                    break;
-                }
-                case MotionEvent.ACTION_UP:
-                case MotionEvent.ACTION_CANCEL: {
-                    if (!swiping[0]) break;
-                    float dx = event.getRawX() - startX[0];
-                    float dy = event.getRawY() - startY[0];
-                    if (Math.abs(dx) < Math.abs(dy)) {
-                        swiping[0] = false;
-                        snapBack(card);
-                        break;
-                    }
-                    boolean delete = dx < -view.getWidth() * threshold;
-                    swiping[0] = false;
-                    snapBack(card);
-                    if (delete && actions != null) actions.onDelete(task);
-                    return true;
-                }
-                default:
-                    break;
-            }
-            return false;
-        });
-    }
-
-    /** 卡片弹回原位 */
-    private static void snapBack(View card) {
-        card.animate().translationX(0f).setDuration(150).start();
+        ListGestures.attach(v, card, t, container, draggable, actions);
     }
 
     /** 标签 → 一个小色点（必做/选做/学校/个人各一色，自由标签用淡紫灰） */

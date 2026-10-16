@@ -134,7 +134,8 @@ public class TaskListFragment extends Fragment implements TaskStore.Listener {
         }
 
         ListBuilder.bind(listDeadline, emptyDeadline, withDdl, false, actions);
-        ListBuilder.bind(listLongTerm, emptyLongTerm, longTerm, false, actions);
+        // 长线任务区开启「长按拖拽排序」
+        ListBuilder.bind(listLongTerm, emptyLongTerm, longTerm, false, actions, true);
 
         tvZoneDeadlineCount.setText(String.valueOf(withDdl.size()));
         tvZoneLongCount.setText(String.valueOf(longTerm.size()));

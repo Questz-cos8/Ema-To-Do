@@ -131,16 +131,19 @@
                             android:singleLine="true"
                             android:textColor="@color/text_secondary"
                             android:textSize="11.5sp" />
-
-                        <TextView
-                            android:id="@+id/tvStage"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:paddingStart="4dp"
-                            android:textColor="@color/text_hint"
-                            android:textSize="10.5sp" />
                     </LinearLayout>
                 </LinearLayout>
+
+                <!-- 进度：贴在日期正左边，垂直居中，不跟其他文字挤在一行 -->
+                <TextView
+                    android:id="@+id/tvStage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="6dp"
+                    android:gravity="center_vertical"
+                    android:singleLine="true"
+                    android:textColor="@color/text_hint"
+                    android:textSize="10.5sp" />
 
                 <TextView
                     android:id="@+id/tvDeadlineDate"

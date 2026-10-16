@@ -40,6 +40,12 @@ public interface AppHost {
         void onPicked(String path);
     }
 
+    /** 「文件」页：加一张相册笔记（从相册/图片里挑） */
+    void addImageNote();
+
+    /** 「文件」页：加一份学习文件（从文件管理器里挑，任意类型） */
+    void addStudyFile();
+
     /** 数据变化后刷新所有页面 */
     void refreshAll();
 

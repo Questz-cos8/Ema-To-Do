@@ -29,8 +29,10 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.todolife.app.R;
 import com.todolife.app.data.Query;
+import com.todolife.app.data.DocStore;
 import com.todolife.app.data.TaskStore;
 import com.todolife.app.model.Deadline;
+import com.todolife.app.model.Doc;
 import com.todolife.app.model.Task;
 import com.todolife.app.reminder.ReminderScheduler;
 import com.todolife.app.util.ImagePicker;
@@ -87,6 +89,9 @@ public class MainActivity extends AppCompatActivity implements AppHost, TaskStor
     private ActivityResultLauncher<String> cardImageLauncher;
     private ActivityResultLauncher<String> appBgLauncher;
     private ImagePicker.Callback pendingImageCallback;
+    /** 「文件」页的两个入口，同样只在 onCreate 注册一次 */
+    private ActivityResultLauncher<String> imageNoteLauncher;
+    private ActivityResultLauncher<String[]> studyFileLauncher;
 
     /** 当前打开着的面板，用于把选图结果回填到正确的面板上 */
     private EditSheet activeEditSheet;
@@ -119,6 +124,13 @@ public class MainActivity extends AppCompatActivity implements AppHost, TaskStor
                 new ActivityResultContracts.GetContent(), this::dispatchPickedImage);
         appBgLauncher = registerForActivityResult(
                 new ActivityResultContracts.GetContent(), this::dispatchPickedImage);
+        // 「文件」页：相册笔记（只挑图片）与学习文件（任意类型）
+        imageNoteLauncher = registerForActivityResult(
+                new ActivityResultContracts.GetContent(),
+                uri -> importDoc(Doc.CAT_NOTE, uri, R.string.files_added_note));
+        studyFileLauncher = registerForActivityResult(
+                new ActivityResultContracts.OpenDocument(),
+                uri -> importDoc(Doc.CAT_STUDY, uri, R.string.files_added_study));
 
         // 底部导航自己撑住系统手势条/导航栏的安全区
         final View navView = findViewById(R.id.bottomNav);
@@ -144,7 +156,7 @@ public class MainActivity extends AppCompatActivity implements AppHost, TaskStor
         // 用系统自带的 ViewPager：内部是普通滚动容器，翻页不会像 ViewPager2 那样
         // 贴着手指急停吸附；配合 FragmentPagerAdapter，页面常驻、不重建视图，手感更顺。
         pager.setAdapter(new PagesAdapter(getSupportFragmentManager()));
-        pager.setOffscreenPageLimit(3);
+        pager.setOffscreenPageLimit(4);
 
         bottomNav.setOnItemSelectedListener(item -> {
             // 由翻页联动过来的高亮变化，不要再回头设置一次 currentItem
@@ -153,7 +165,8 @@ public class MainActivity extends AppCompatActivity implements AppHost, TaskStor
             int id = item.getItemId();
             if (id == R.id.tab_calendar) index = 1;
             else if (id == R.id.tab_done) index = 2;
-            else if (id == R.id.tab_settings) index = 3;
+            else if (id == R.id.tab_files) index = 3;
+            else if (id == R.id.tab_settings) index = 4;
             pager.setCurrentItem(index, false);
             return true;
         });
@@ -171,14 +184,15 @@ public class MainActivity extends AppCompatActivity implements AppHost, TaskStor
                 int menuId = R.id.tab_todo;
                 if (position == 1) menuId = R.id.tab_calendar;
                 else if (position == 2) menuId = R.id.tab_done;
-                else if (position == 3) menuId = R.id.tab_settings;
+                else if (position == 3) menuId = R.id.tab_files;
+                else if (position == 4) menuId = R.id.tab_settings;
                 if (bottomNav.getSelectedItemId() != menuId) {
                     syncingTab = true;
                     bottomNav.setSelectedItemId(menuId);
                     syncingTab = false;
                 }
-                // 日历页也用悬浮按钮新建，只有设置页藏起来
-                fab.setVisibility(position == 3 ? View.GONE : View.VISIBLE);
+                // 新建任务的悬浮按钮只在前三页用；文件页各自有「添加」，设置页不需要
+                fab.setVisibility(position >= 3 ? View.GONE : View.VISIBLE);
             }
 
             @Override
@@ -265,6 +279,7 @@ public class MainActivity extends AppCompatActivity implements AppHost, TaskStor
             if (f instanceof TaskListFragment) ((TaskListFragment) f).render();
             else if (f instanceof CalendarFragment) ((CalendarFragment) f).render();
             else if (f instanceof DoneFragment) ((DoneFragment) f).render();
+            else if (f instanceof FilesFragment) ((FilesFragment) f).render();
         }
         applyBackground();
     }
@@ -579,8 +594,45 @@ public class MainActivity extends AppCompatActivity implements AppHost, TaskStor
     }
 
     @Override
+    public void addImageNote() {
+        try {
+            imageNoteLauncher.launch("image/*");
+        } catch (Exception e) {
+            Toast.makeText(this, R.string.files_import_failed, Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void addStudyFile() {
+        try {
+            // 不限类型：学校发的东西什么格式都有
+            studyFileLauncher.launch(new String[]{"*/*"});
+        } catch (Exception e) {
+            Toast.makeText(this, R.string.files_import_failed, Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    /** 选完之后的统一下场：复制进私有目录 → 提示 */
+    private void importDoc(int category, @Nullable android.net.Uri uri, int doneRes) {
+        if (uri == null || isFinishing() || isDestroyed()) return;
+        Doc d = DocStore.get(this).importFrom(category, uri);
+        if (d == null) {
+            Toast.makeText(this, R.string.files_import_failed, Toast.LENGTH_SHORT).show();
+            return;
+        }
+        Toast.makeText(this, doneRes, Toast.LENGTH_SHORT).show();
+        // DocStore.save() 已经通知过监听者，这里不用再手动刷新
+    }
+
+    @Override
     public void onDelete(Task task) {
         deleteTask(task);
+    }
+
+    @Override
+    public void onReorderLongTerm(List<String> orderedIds) {
+        // 落库后 store.save() 会通知所有监听者重绘（列表顺序也就跟着更新）
+        store.applyLongTermOrder(orderedIds);
     }
 
     private void deleteTask(Task task) {
@@ -649,6 +701,8 @@ public class MainActivity extends AppCompatActivity implements AppHost, TaskStor
                 case 2:
                     return new DoneFragment();
                 case 3:
+                    return new FilesFragment();
+                case 4:
                     return new SettingsFragment();
                 default:
                     return new TaskListFragment();
@@ -657,7 +711,7 @@ public class MainActivity extends AppCompatActivity implements AppHost, TaskStor
 
         @Override
         public int getCount() {
-            return 4;
+            return 5;
         }
     }
 }

@@ -242,6 +242,29 @@ public final class TaskStore {
         save();
     }
 
+    /**
+     * 长线任务拖拽排序后落库：按传入顺序写 1..n 的 {@code sortIndex}。
+     *
+     * @param orderedIds 拖动后长线任务区的 id 顺序
+     * @return 顺序是否真的变了（没变就不用重绘）
+     */
+    public boolean applyLongTermOrder(List<String> orderedIds) {
+        if (orderedIds == null || orderedIds.isEmpty()) return false;
+        boolean changed = false;
+        for (int i = 0; i < orderedIds.size(); i++) {
+            Task t = byId(orderedIds.get(i));
+            if (t == null) continue;
+            int want = i + 1;
+            if (t.getSortIndex() != want) {
+                t.setSortIndex(want);
+                t.touch();
+                changed = true;
+            }
+        }
+        if (changed) save();
+        return changed;
+    }
+
     // ------------------------------------------------------------ 标签池
 
     public List<String> customTagPool() {
@@ -269,12 +292,20 @@ public final class TaskStore {
 
     // ------------------------------------------------------------ 排序
 
-    /** 待办排序：置顶 → 逾期/临近优先 → 有 DDL 优先 → 截止时间 → 创建时间 */
+    /** 待办排序：置顶 → 逾期/临近优先 → 有 DDL 优先 → 截止时间 → 长线任务按手动顺序 → 创建时间 */
     public static final Comparator<Task> TODO_ORDER = (a, b) -> {
         if (a.isPinned() != b.isPinned()) return a.isPinned() ? -1 : 1;
         int da = a.hasDeadline() ? Deadline.daysLeft(a.getDeadline()) : Integer.MAX_VALUE;
         int db = b.hasDeadline() ? Deadline.daysLeft(b.getDeadline()) : Integer.MAX_VALUE;
         if (da != db) return Integer.compare(da, db);
+        // 走到这里说明两者剩余天数相同（长线任务都是 MAX_VALUE，即都没 DDL）：
+        // 长线区优先按用户拖出来的手动顺序，没排过的排在已排过的后面
+        boolean oa = a.hasManualOrder();
+        boolean ob = b.hasManualOrder();
+        if (oa != ob) return oa ? -1 : 1;
+        if (oa && a.getSortIndex() != b.getSortIndex()) {
+            return Integer.compare(a.getSortIndex(), b.getSortIndex());
+        }
         if (a.getPriority() != b.getPriority()) return Integer.compare(b.getPriority(), a.getPriority());
         long ca = a.getCreatedAt();
         long cb = b.getCreatedAt();

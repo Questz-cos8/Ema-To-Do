@@ -74,7 +74,7 @@
     <string name="settings_clear_done">清空已完成任务</string>
     <string name="settings_clear_done_short">清空已完成</string>
     <string name="settings_about">关于</string>
-    <string name="settings_about_desc">艾玛の待办清单 v1.2.7 · Ema\'s To-Do\n都乖乖存在本机里，不联网、不上传哦</string>
+    <string name="settings_about_desc">艾玛の待办清单 v1.3.0 · Ema\'s To-Do\n都乖乖存在本机里，不联网、不上传哦</string>
     <string name="settings_sample">插入示例任务</string>
     <string name="settings_legend">圆点颜色：灰 &gt;14天 · 薄荷 ≤14天 · 杏橙 ≤7天 · 樱红 ≤3天 · 暗樱 已逾期 · 淡紫 长线</string>
 
@@ -103,4 +103,29 @@
     <string name="pick_image">选择图片</string>
     <string name="need_title">还没写要做什么呢～</string>
     <string name="confirm_clear_done">要把划掉的全部清空吗？</string>
+
+    <!-- 文件页 -->
+    <string name="nav_files">文件</string>
+    <string name="files_title">文件</string>
+    <string name="files_note">相册笔记</string>
+    <string name="files_note_hint">上课拍的板书、老师发的安排，截图丢这儿</string>
+    <string name="files_study">学习文件</string>
+    <string name="files_study_hint">讲义、作业要求之类的文档</string>
+    <string name="files_add">＋ 添加</string>
+    <string name="files_empty_note">还没有笔记，点「＋ 添加」选一张吧～</string>
+    <string name="files_empty_study">还没有文件，点「＋ 添加」选一个吧～</string>
+    <string name="files_total">共 %1$d 份</string>
+    <string name="files_count">%1$d 份</string>
+    <string name="files_added_note">收进相册笔记啦～</string>
+    <string name="files_added_study">收进学习文件啦～</string>
+    <string name="files_import_failed">这个文件读不出来呢…</string>
+    <string name="files_no_viewer">手机上好像没有能打开它的应用</string>
+    <string name="files_missing">文件不在了，可能被清理掉了</string>
+    <string name="files_menu_title">要做什么？</string>
+    <string name="files_action_open">打开</string>
+    <string name="files_action_rename">重命名</string>
+    <string name="files_action_delete">删除</string>
+    <string name="files_rename_title">改个名字</string>
+    <string name="files_delete_confirm">要删掉「%1$s」吗？删了就找不回来了</string>
+    <string name="files_deleted">删掉啦</string>
 </resources>

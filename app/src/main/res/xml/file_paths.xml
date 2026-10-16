@@ -2,4 +2,6 @@
 <paths xmlns:android="http://schemas.android.com/apk/res/android">
     <files-path name="backups" path="backup/" />
     <cache-path name="shared" path="shared/" />
+    <!-- 「文件」页导入的图片与文档，交给系统应用打开时用 -->
+    <files-path name="docs" path="docs/" />
 </paths>

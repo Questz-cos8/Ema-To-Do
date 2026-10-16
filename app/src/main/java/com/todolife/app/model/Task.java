@@ -76,6 +76,14 @@ public class Task {
     /** 提醒提前量（分钟），-1 = 不提醒 */
     private int remindBeforeMinutes = -1;
 
+    /**
+     * 长线任务的手动顺序（用户在列表里拖出来的）。
+     *
+     * <p>0 = 还没手动排过。排过之后是 1..n，比较小的排前面。
+     * 有 DDL 的任务不参与手动排序，永远是 0。</p>
+     */
+    private int sortIndex = 0;
+
     // ------------------------------------------------------------------ 便捷判断
 
     public boolean hasDeadline() {
@@ -147,6 +155,7 @@ public class Task {
         t.cardImage = cardImage;
         t.cardImageAlpha = cardImageAlpha;
         t.remindBeforeMinutes = remindBeforeMinutes;
+        t.sortIndex = sortIndex;
         return t;
     }
 
@@ -178,6 +187,7 @@ public class Task {
             o.put("cardImage", cardImage);
             o.put("cardImageAlpha", cardImageAlpha);
             o.put("remind", remindBeforeMinutes);
+            o.put("sortIndex", sortIndex);
         } catch (JSONException e) {
             // 全部字段都是本类的强类型字段，理论上不会失败；真的失败也不能让
             // 「删除 / 保存任务」这种用户操作跟着崩掉，所以这里吞掉异常。
@@ -208,6 +218,7 @@ public class Task {
         t.cardImage = o.optString("cardImage", "");
         t.cardImageAlpha = o.optInt("cardImageAlpha", 150);
         t.remindBeforeMinutes = o.optInt("remind", -1);
+        t.sortIndex = o.optInt("sortIndex", 0);
 
         JSONArray arr = o.optJSONArray("tags");
         t.customTags = new ArrayList<>();
@@ -297,4 +308,11 @@ public class Task {
     public void setRemindBeforeMinutes(int v) { this.remindBeforeMinutes = v; }
 
     public boolean hasReminder() { return remindBeforeMinutes >= 0 && hasDeadline(); }
+
+    public int getSortIndex() { return sortIndex; }
+
+    public void setSortIndex(int v) { this.sortIndex = Math.max(0, v); }
+
+    /** 是否已经被手动排过序 */
+    public boolean hasManualOrder() { return sortIndex > 0; }
 }
