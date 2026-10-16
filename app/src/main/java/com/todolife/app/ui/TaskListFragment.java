@@ -134,8 +134,13 @@ public class TaskListFragment extends Fragment implements TaskStore.Listener {
         }
 
         ListBuilder.bind(listDeadline, emptyDeadline, withDdl, false, actions);
-        // 长线任务区开启「长按拖拽排序」
-        ListBuilder.bind(listLongTerm, emptyLongTerm, longTerm, false, actions, true);
+        /*
+         * 长线任务区开启「长按拖拽排序」。
+         *
+         * 但筛选生效时一定要关掉：这时列表里只是长线任务的一个子集，
+         * 拖完只会给这个子集写序号，没显示出来的还留着旧序号，取消筛选后顺序就乱了。
+         */
+        ListBuilder.bind(listLongTerm, emptyLongTerm, longTerm, false, actions, !query.isActive());
 
         tvZoneDeadlineCount.setText(String.valueOf(withDdl.size()));
         tvZoneLongCount.setText(String.valueOf(longTerm.size()));
