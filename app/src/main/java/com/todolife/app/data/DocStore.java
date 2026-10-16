@@ -16,8 +16,10 @@ import org.json.JSONException;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
@@ -154,7 +156,8 @@ public final class DocStore {
         }
 
         Doc d = new Doc();
-        d.setName(name);
+        // 相册笔记用「日期 + 时间」当名字：相机/截图给的是 15227.jpg 这种，完全认不出是哪天拍的
+        d.setName(category == Doc.CAT_NOTE ? timeName(name, mime) : name);
         d.setCategory(category);
         d.setPath(target.getAbsolutePath());
         d.setMime(mime);
@@ -174,6 +177,25 @@ public final class DocStore {
         save();
     }
 
+    /**
+     * 批量删除（多选模式下用）。
+     *
+     * <p>逐个调 {@link #delete} 会触发 N 次 save + N 次重绘，所以这里合成一次。</p>
+     */
+    public void deleteAll(List<String> ids) {
+        if (ids == null || ids.isEmpty()) return;
+        boolean changed = false;
+        for (String id : ids) {
+            Doc d = byId(id);
+            if (d == null) continue;
+            File f = new File(d.getPath());
+            if (f.exists()) f.delete();
+            docs.remove(d);
+            changed = true;
+        }
+        if (changed) save();
+    }
+
     public void rename(String id, String newName) {
         Doc d = byId(id);
         if (d == null) return;
@@ -190,6 +212,18 @@ public final class DocStore {
             if (c != null) c.close();
         } catch (Exception ignored) {
         }
+    }
+
+    /**
+     * 相册笔记的展示名：用导入时刻的「日期 + 时间」。
+     *
+     * <p>相机和截图给的名字是 {@code 15227.jpg} 这种，过几天完全认不出是哪天的板书，
+     * 所以这里统一换成看得懂的名字（扩展名保留，方便看出是什么格式）。</p>
+     */
+    private static String timeName(String originalName, String mime) {
+        String stamp = new SimpleDateFormat("yyyy-MM-dd HH.mm.ss", Locale.getDefault())
+                .format(new Date());
+        return stamp + extOf(originalName, mime);
     }
 
     private static String displayName(ContentResolver cr, Uri uri) {

@@ -2,23 +2,27 @@ package com.todolife.app.ui;
 
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.todolife.app.R;
 import com.todolife.app.data.DocStore;
@@ -26,9 +30,12 @@ import com.todolife.app.model.Doc;
 import com.todolife.app.util.ImageStore;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 /**
  * 「文件」页：两块内容。
@@ -39,6 +46,10 @@ import java.util.Locale;
  * </ul>
  *
  * <p>文件本体都复制进了 App 私有目录，所以外部授权失效也不会变白图。</p>
+ *
+ * <h3>多选</h3>
+ * <p>长按任意一项进入多选：底部弹出一条操作条（已选 N 项 / 全选 / 重命名 / 删除 / 取消），
+ * 再点其他项就是加选。选中一个时才显示「重命名」。返回键退出多选。</p>
  */
 public class FilesFragment extends Fragment implements DocStore.Listener {
 
@@ -54,6 +65,14 @@ public class FilesFragment extends Fragment implements DocStore.Listener {
     private LinearLayout listStudy;
     private View emptyNote;
     private View emptyStudy;
+
+    // 多选
+    private View selectionBar;
+    private TextView tvSelectCount;
+    private TextView btnSelectAll;
+    private View btnSelectRename;
+    private final Set<String> selected = new LinkedHashSet<>();
+    private OnBackPressedCallback backCallback;
 
     @Nullable
     @Override
@@ -76,8 +95,33 @@ public class FilesFragment extends Fragment implements DocStore.Listener {
         emptyNote = v.findViewById(R.id.emptyNote);
         emptyStudy = v.findViewById(R.id.emptyStudy);
 
+        selectionBar = v.findViewById(R.id.selectionBar);
+        tvSelectCount = v.findViewById(R.id.tvSelectCount);
+        btnSelectAll = v.findViewById(R.id.btnSelectAll);
+        btnSelectRename = v.findViewById(R.id.btnSelectRename);
+        View btnSelectDelete = v.findViewById(R.id.btnSelectDelete);
+        View btnSelectCancel = v.findViewById(R.id.btnSelectCancel);
+
         v.findViewById(R.id.btnAddNote).setOnClickListener(x -> host.addImageNote());
         v.findViewById(R.id.btnAddStudy).setOnClickListener(x -> host.addStudyFile());
+
+        btnSelectAll.setOnClickListener(x -> toggleSelectAll());
+        btnSelectRename.setOnClickListener(x -> {
+            Doc d = singleSelected();
+            if (d != null) askRename(d);
+        });
+        btnSelectDelete.setOnClickListener(x -> askDeleteSelected());
+        btnSelectCancel.setOnClickListener(x -> exitSelection());
+
+        // 多选时按返回键先退出多选，而不是退出 App
+        backCallback = new OnBackPressedCallback(false) {
+            @Override
+            public void handleOnBackPressed() {
+                exitSelection();
+            }
+        };
+        requireActivity().getOnBackPressedDispatcher()
+                .addCallback(getViewLifecycleOwner(), backCallback);
 
         render();
     }
@@ -86,6 +130,7 @@ public class FilesFragment extends Fragment implements DocStore.Listener {
     public void onDestroyView() {
         super.onDestroyView();
         if (docs != null) docs.removeListener(this);
+        selected.clear();
     }
 
     @Override
@@ -102,6 +147,9 @@ public class FilesFragment extends Fragment implements DocStore.Listener {
         List<Doc> notes = docs.byCategory(Doc.CAT_NOTE);
         List<Doc> studies = docs.byCategory(Doc.CAT_STUDY);
 
+        // 选中的可能已经被删掉了，清一下
+        selected.removeIf(id -> docs.byId(id) == null);
+
         tvFilesTotal.setText(getString(R.string.files_total, notes.size() + studies.size()));
         tvNoteCount.setText(getString(R.string.files_count, notes.size()));
         tvStudyCount.setText(getString(R.string.files_count, studies.size()));
@@ -111,6 +159,8 @@ public class FilesFragment extends Fragment implements DocStore.Listener {
 
         emptyNote.setVisibility(notes.isEmpty() ? View.VISIBLE : View.GONE);
         emptyStudy.setVisibility(studies.isEmpty() ? View.VISIBLE : View.GONE);
+
+        updateSelectionBar();
     }
 
     /** 相册笔记：三列缩略图，每行自己拼一个 LinearLayout */
@@ -146,14 +196,41 @@ public class FilesFragment extends Fragment implements DocStore.Listener {
         lp.rightMargin = rightMargin;
         cell.setLayoutParams(lp);
 
+        boolean sel = selected.contains(d.getId());
+
+        // 图片 + 选中蒙版 + 勾
+        FrameLayout imageWrap = new FrameLayout(requireContext());
+        imageWrap.setLayoutParams(new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT, size));
+
         CardImageView iv = new CardImageView(requireContext());
-        LinearLayout.LayoutParams ilp = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT, size);
-        iv.setLayoutParams(ilp);
+        iv.setLayoutParams(new FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
         iv.setCornerRadius(dp(12));
         iv.setContentDescription(d.getName());
         ImageStore.loadInto(iv, d.getPath(), 255, size, size);
-        cell.addView(iv);
+        imageWrap.addView(iv);
+
+        if (sel) {
+            View overlay = new View(requireContext());
+            overlay.setBackgroundResource(R.drawable.bg_selected_overlay);
+            imageWrap.addView(overlay, new FrameLayout.LayoutParams(
+                    FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
+
+            TextView check = new TextView(requireContext());
+            check.setText("✓");
+            check.setBackgroundResource(R.drawable.bg_check_circle);
+            check.setGravity(Gravity.CENTER);
+            check.setTextColor(0xFFFFFFFF);
+            check.setTextSize(10f);
+            check.setTypeface(Typeface.DEFAULT_BOLD);
+            FrameLayout.LayoutParams clp = new FrameLayout.LayoutParams(
+                    dp(20), dp(20), Gravity.TOP | Gravity.END);
+            clp.topMargin = dp(5);
+            clp.rightMargin = dp(5);
+            imageWrap.addView(check, clp);
+        }
+        cell.addView(imageWrap);
 
         TextView name = new TextView(requireContext());
         name.setText(d.getName());
@@ -161,16 +238,16 @@ public class FilesFragment extends Fragment implements DocStore.Listener {
         name.setMaxLines(1);
         name.setEllipsize(android.text.TextUtils.TruncateAt.END);
         name.setGravity(Gravity.CENTER_HORIZONTAL);
-        name.setTextColor(0xFF8C8493);
+        name.setTextColor(ContextCompat.getColor(requireContext(), R.color.text_secondary));
         LinearLayout.LayoutParams nlp = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         nlp.topMargin = dp(4);
         name.setLayoutParams(nlp);
         cell.addView(name);
 
-        cell.setOnClickListener(x -> open(d));
+        cell.setOnClickListener(x -> onItemClick(d));
         cell.setOnLongClickListener(x -> {
-            showMenu(d);
+            onItemLongClick(d);
             return true;
         });
         return cell;
@@ -181,22 +258,97 @@ public class FilesFragment extends Fragment implements DocStore.Listener {
         listStudy.removeAllViews();
         LayoutInflater inflater = LayoutInflater.from(requireContext());
         for (Doc d : studies) {
-            View row = inflater.inflate(R.layout.item_doc, listStudy, false);
+            MaterialCardView row = (MaterialCardView) inflater.inflate(R.layout.item_doc, listStudy, false);
             TextView ext = row.findViewById(R.id.tvDocExt);
             TextView name = row.findViewById(R.id.tvDocName);
             TextView meta = row.findViewById(R.id.tvDocMeta);
+            View check = row.findViewById(R.id.tvDocCheck);
 
             ext.setText(d.extLabel());
             name.setText(d.getName());
             meta.setText(sizeText(d.getSize()) + " · " + dateText(d.getAddedAt()));
 
-            row.setOnClickListener(x -> open(d));
+            boolean sel = selected.contains(d.getId());
+            check.setVisibility(sel ? View.VISIBLE : View.GONE);
+            row.setStrokeColor(ContextCompat.getColor(requireContext(),
+                    sel ? R.color.primary : R.color.stroke));
+            row.setStrokeWidth(sel ? dp(2) : dp(1));
+
+            row.setOnClickListener(x -> onItemClick(d));
             row.setOnLongClickListener(x -> {
-                showMenu(d);
+                onItemLongClick(d);
                 return true;
             });
             listStudy.addView(row);
         }
+    }
+
+    // ------------------------------------------------------------------ 多选
+
+    private boolean selectionMode() {
+        return !selected.isEmpty();
+    }
+
+    private void onItemClick(Doc d) {
+        if (selectionMode()) {
+            toggle(d);
+        } else {
+            open(d);
+        }
+    }
+
+    private void onItemLongClick(Doc d) {
+        if (selectionMode()) toggle(d);
+        else enterSelection(d);
+    }
+
+    private void enterSelection(Doc d) {
+        selected.add(d.getId());
+        render();
+    }
+
+    private void toggle(Doc d) {
+        if (!selected.remove(d.getId())) selected.add(d.getId());
+        render();
+    }
+
+    private void exitSelection() {
+        if (selected.isEmpty()) return;
+        selected.clear();
+        render();
+    }
+
+    private List<Doc> allDocs() {
+        List<Doc> all = new ArrayList<>(docs.byCategory(Doc.CAT_NOTE));
+        all.addAll(docs.byCategory(Doc.CAT_STUDY));
+        return all;
+    }
+
+    private void toggleSelectAll() {
+        List<Doc> all = allDocs();
+        if (selected.size() >= all.size()) {
+            selected.clear();
+        } else {
+            for (Doc d : all) selected.add(d.getId());
+        }
+        render();
+    }
+
+    private Doc singleSelected() {
+        if (selected.size() != 1) return null;
+        return docs.byId(selected.iterator().next());
+    }
+
+    private void updateSelectionBar() {
+        boolean on = selectionMode();
+        selectionBar.setVisibility(on ? View.VISIBLE : View.GONE);
+        if (backCallback != null) backCallback.setEnabled(on);
+        if (!on) return;
+
+        tvSelectCount.setText(getString(R.string.files_selected_count, selected.size()));
+        boolean allChosen = selected.size() >= allDocs().size();
+        btnSelectAll.setText(allChosen ? R.string.files_select_none : R.string.files_select_all);
+        btnSelectRename.setVisibility(selected.size() == 1 ? View.VISIBLE : View.GONE);
     }
 
     // ------------------------------------------------------------------ 操作
@@ -222,23 +374,6 @@ public class FilesFragment extends Fragment implements DocStore.Listener {
         }
     }
 
-    private void showMenu(Doc d) {
-        if (!isAdded()) return;
-        String[] items = {
-                getString(R.string.files_action_open),
-                getString(R.string.files_action_rename),
-                getString(R.string.files_action_delete)
-        };
-        new MaterialAlertDialogBuilder(requireContext())
-                .setTitle(d.getName())
-                .setItems(items, (dlg, which) -> {
-                    if (which == 0) open(d);
-                    else if (which == 1) askRename(d);
-                    else askDelete(d);
-                })
-                .show();
-    }
-
     private void askRename(Doc d) {
         if (!isAdded()) return;
         EditText et = new EditText(requireContext());
@@ -247,24 +382,38 @@ public class FilesFragment extends Fragment implements DocStore.Listener {
         et.setTextSize(14f);
         int pad = dp(18);
         et.setPadding(pad, pad / 2, pad, pad / 2);
-        new MaterialAlertDialogBuilder(requireContext())
+        new MaterialAlertDialogBuilder(requireContext(), R.style.Theme_TodoLife_AlertDialog)
                 .setTitle(R.string.files_rename_title)
                 .setView(et)
                 .setNegativeButton(R.string.action_cancel, null)
-                .setPositiveButton(R.string.action_save, (dlg, w) ->
-                        docs.rename(d.getId(), et.getText().toString()))
+                .setPositiveButton(R.string.action_save, (dlg, w) -> {
+                    docs.rename(d.getId(), et.getText().toString());
+                    exitSelection();
+                })
                 .show();
     }
 
-    private void askDelete(Doc d) {
-        if (!isAdded()) return;
-        new MaterialAlertDialogBuilder(requireContext())
+    private void askDeleteSelected() {
+        if (!isAdded() || selected.isEmpty()) return;
+        final List<String> ids = new ArrayList<>(selected);
+        String msg;
+        if (ids.size() == 1) {
+            Doc only = docs.byId(ids.get(0));
+            msg = getString(R.string.files_delete_confirm, only == null ? "" : only.getName());
+        } else {
+            msg = getString(R.string.files_delete_many, ids.size());
+        }
+        new MaterialAlertDialogBuilder(requireContext(), R.style.Theme_TodoLife_AlertDialog)
                 .setTitle(R.string.action_delete)
-                .setMessage(getString(R.string.files_delete_confirm, d.getName()))
+                .setMessage(msg)
                 .setNegativeButton(R.string.action_cancel, null)
                 .setPositiveButton(R.string.action_delete, (dlg, w) -> {
-                    docs.delete(d.getId());
-                    toast(getString(R.string.files_deleted));
+                    int n = ids.size();
+                    docs.deleteAll(ids);
+                    selected.clear();
+                    render();
+                    toast(n == 1 ? getString(R.string.files_deleted)
+                            : getString(R.string.files_deleted_many, n));
                 })
                 .show();
     }

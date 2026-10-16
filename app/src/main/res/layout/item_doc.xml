@@ -63,5 +63,19 @@
                 android:textColor="@color/text_hint"
                 android:textSize="11.5sp" />
         </LinearLayout>
+
+        <!-- 多选模式下才出现的勾选标记 -->
+        <TextView
+            android:id="@+id/tvDocCheck"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:layout_marginStart="10dp"
+            android:background="@drawable/bg_check_circle"
+            android:gravity="center"
+            android:text="✓"
+            android:textColor="#FFFFFFFF"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            android:visibility="gone" />
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

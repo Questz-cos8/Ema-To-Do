@@ -1,168 +1,253 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:clipToPadding="false"
-    android:paddingStart="@dimen/page_padding"
-    android:paddingEnd="@dimen/page_padding"
-    android:paddingTop="18dp"
-    android:paddingBottom="130dp">
+    android:layout_height="match_parent">
 
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:paddingStart="@dimen/page_padding"
+        android:paddingEnd="@dimen/page_padding"
+        android:paddingTop="18dp"
+        android:paddingBottom="130dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- 标题 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/files_title"
+                    android:textColor="@color/text_primary"
+                    android:textSize="22sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvFilesTotal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/text_hint"
+                    android:textSize="12sp" />
+            </LinearLayout>
+
+            <!-- ===================== 相册笔记 ===================== -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/files_note"
+                    android:textColor="@color/text_primary"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvNoteCount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="10dp"
+                    android:textColor="@color/text_hint"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/btnAddNote"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_text_chip"
+                    android:gravity="center"
+                    android:minHeight="32dp"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp"
+                    android:text="@string/files_add"
+                    android:textColor="@color/primary"
+                    android:textSize="12.5sp" />
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:text="@string/files_note_hint"
+                android:textColor="@color/text_hint"
+                android:textSize="11.5sp" />
+
+            <LinearLayout
+                android:id="@+id/gridNote"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:orientation="vertical" />
+
+            <TextView
+                android:id="@+id/emptyNote"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/files_empty_note"
+                android:textColor="@color/text_hint"
+                android:textSize="12.5sp"
+                android:visibility="gone" />
+
+            <!-- ===================== 学习文件 ===================== -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="26dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/files_study"
+                    android:textColor="@color/text_primary"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvStudyCount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="10dp"
+                    android:textColor="@color/text_hint"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/btnAddStudy"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_text_chip"
+                    android:gravity="center"
+                    android:minHeight="32dp"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp"
+                    android:text="@string/files_add"
+                    android:textColor="@color/primary"
+                    android:textSize="12.5sp" />
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:text="@string/files_study_hint"
+                android:textColor="@color/text_hint"
+                android:textSize="11.5sp" />
+
+            <LinearLayout
+                android:id="@+id/listStudy"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:orientation="vertical" />
+
+            <TextView
+                android:id="@+id/emptyStudy"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/files_empty_study"
+                android:textColor="@color/text_hint"
+                android:textSize="12.5sp"
+                android:visibility="gone" />
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <!-- 多选模式的操作条：贴在底部导航上方 -->
     <LinearLayout
+        android:id="@+id/selectionBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
-
-        <!-- 标题 -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/files_title"
-                android:textColor="@color/text_primary"
-                android:textSize="22sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/tvFilesTotal"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/text_hint"
-                android:textSize="12sp" />
-        </LinearLayout>
-
-        <!-- ===================== 相册笔记 ===================== -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/files_note"
-                android:textColor="@color/text_primary"
-                android:textSize="15sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/tvNoteCount"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="10dp"
-                android:textColor="@color/text_hint"
-                android:textSize="12sp" />
-
-            <TextView
-                android:id="@+id/btnAddNote"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/bg_text_chip"
-                android:gravity="center"
-                android:minHeight="32dp"
-                android:paddingStart="12dp"
-                android:paddingEnd="12dp"
-                android:text="@string/files_add"
-                android:textColor="@color/primary"
-                android:textSize="12.5sp" />
-        </LinearLayout>
+        android:layout_gravity="bottom"
+        android:layout_marginStart="14dp"
+        android:layout_marginEnd="14dp"
+        android:layout_marginBottom="86dp"
+        android:background="@drawable/bg_selection_bar"
+        android:elevation="12dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingStart="16dp"
+        android:paddingTop="9dp"
+        android:paddingEnd="6dp"
+        android:paddingBottom="9dp"
+        android:visibility="gone">
 
         <TextView
-            android:layout_width="match_parent"
+            android:id="@+id/tvSelectCount"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="2dp"
-            android:text="@string/files_note_hint"
-            android:textColor="@color/text_hint"
-            android:textSize="11.5sp" />
-
-        <LinearLayout
-            android:id="@+id/gridNote"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:orientation="vertical" />
+            android:layout_weight="1"
+            android:textColor="@color/text_primary"
+            android:textSize="13.5sp"
+            android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/emptyNote"
-            android:layout_width="match_parent"
+            android:id="@+id/btnSelectAll"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="@string/files_empty_note"
-            android:textColor="@color/text_hint"
-            android:textSize="12.5sp"
-            android:visibility="gone" />
-
-        <!-- ===================== 学习文件 ===================== -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="26dp"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/files_study"
-                android:textColor="@color/text_primary"
-                android:textSize="15sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/tvStudyCount"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="10dp"
-                android:textColor="@color/text_hint"
-                android:textSize="12sp" />
-
-            <TextView
-                android:id="@+id/btnAddStudy"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/bg_text_chip"
-                android:gravity="center"
-                android:minHeight="32dp"
-                android:paddingStart="12dp"
-                android:paddingEnd="12dp"
-                android:text="@string/files_add"
-                android:textColor="@color/primary"
-                android:textSize="12.5sp" />
-        </LinearLayout>
+            android:background="@drawable/bg_text_chip"
+            android:gravity="center"
+            android:minHeight="32dp"
+            android:paddingStart="11dp"
+            android:paddingEnd="11dp"
+            android:textColor="@color/text_secondary"
+            android:textSize="12.5sp" />
 
         <TextView
-            android:layout_width="match_parent"
+            android:id="@+id/btnSelectRename"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="2dp"
-            android:text="@string/files_study_hint"
-            android:textColor="@color/text_hint"
-            android:textSize="11.5sp" />
-
-        <LinearLayout
-            android:id="@+id/listStudy"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:orientation="vertical" />
+            android:background="@drawable/bg_text_chip"
+            android:gravity="center"
+            android:minHeight="32dp"
+            android:paddingStart="11dp"
+            android:paddingEnd="11dp"
+            android:text="@string/files_action_rename"
+            android:textColor="@color/primary"
+            android:textSize="12.5sp" />
 
         <TextView
-            android:id="@+id/emptyStudy"
-            android:layout_width="match_parent"
+            android:id="@+id/btnSelectDelete"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="@string/files_empty_study"
-            android:textColor="@color/text_hint"
-            android:textSize="12.5sp"
-            android:visibility="gone" />
+            android:background="@drawable/bg_text_chip"
+            android:gravity="center"
+            android:minHeight="32dp"
+            android:paddingStart="11dp"
+            android:paddingEnd="11dp"
+            android:text="@string/files_action_delete"
+            android:textColor="@color/dot_overdue"
+            android:textSize="12.5sp" />
+
+        <TextView
+            android:id="@+id/btnSelectCancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_text_chip"
+            android:gravity="center"
+            android:minHeight="32dp"
+            android:paddingStart="11dp"
+            android:paddingEnd="11dp"
+            android:text="@string/action_cancel"
+            android:textColor="@color/text_secondary"
+            android:textSize="12.5sp" />
     </LinearLayout>
-</androidx.core.widget.NestedScrollView>
+</FrameLayout>

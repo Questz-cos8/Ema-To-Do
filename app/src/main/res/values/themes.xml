@@ -39,8 +39,30 @@
     <style name="Theme.TodoLife.AlertDialog" parent="Theme.MaterialComponents.Light.Dialog.Alert">
         <item name="colorPrimary">@color/primary</item>
         <item name="colorAccent">@color/primary</item>
-        <item name="android:background">@drawable/bg_dialog</item>
+        <item name="colorOnSurface">@color/text_primary</item>
         <item name="android:textColorPrimary">@color/text_primary</item>
+        <item name="android:textColorSecondary">@color/text_secondary</item>
+        <item name="android:textColorHint">@color/text_hint</item>
+        <!-- 窗口本身透明，背景交给下面这张圆角图，免得出现白色直角方块 -->
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:background">@drawable/bg_dialog</item>
+        <item name="materialAlertDialogTitleTextStyle">@style/TodoLife.DialogTitle</item>
+        <item name="buttonBarPositiveButtonStyle">@style/TodoLife.DialogButton</item>
+        <item name="buttonBarNegativeButtonStyle">@style/TodoLife.DialogButton</item>
+        <item name="buttonBarNeutralButtonStyle">@style/TodoLife.DialogButton</item>
+    </style>
+
+    <style name="TodoLife.DialogTitle" parent="MaterialAlertDialog.MaterialComponents.Title.Text">
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="TodoLife.DialogButton" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
+        <item name="android:textColor">@color/primary</item>
+        <item name="android:textSize">13.5sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:letterSpacing">0.02</item>
     </style>
 
     <!-- 小节标题：小字号 + 淡紫 + 一点字距，干净不抢戏 -->
